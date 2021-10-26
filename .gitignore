@@ -2,4 +2,3 @@
 node_modules/
 *-error.log
 *-workspace
-*-lock.json
