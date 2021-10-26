@@ -1,0 +1,27 @@
+{
+  "name": "cinescrape",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "agenda": "^4.2.1",
+    "cheerio": "^1.0.0-rc.10",
+    "discord.js": "^13.2.0",
+    "dom-parser": "^0.1.6",
+    "dotenv": "^10.0.0",
+    "fetch": "^1.1.0",
+    "ghost-cursor": "^1.1.6",
+    "mongoose": "^6.0.12",
+    "node": "^17.0.1",
+    "node-cron": "^3.0.0",
+    "nodemon": "^2.0.14",
+    "puppeteer": "^10.4.0",
+    "yarn": "^1.22.17"
+  }
+}
