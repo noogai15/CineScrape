@@ -48,6 +48,7 @@ client.on("messageCreate", (message) => {
 
   //CLEAR SCHEDULES COMMAND
   if (sentence === "csclear") {
+    console.log("Clearing all schedules");
     schedules.forEach((s) => {
       clearInterval(s);
     });
@@ -57,6 +58,7 @@ client.on("messageCreate", (message) => {
 
   //LIST ALL MOVIES COMMAND
   if (sentence === "csall") {
+    console.log("Getting all movies");
     scrapeAllMovies().then((allMovies) => {
       allMovies.forEach((movie) => {
         message.channel.send("`" + movie.title + "`");
@@ -66,6 +68,7 @@ client.on("messageCreate", (message) => {
 
   //HELP COMMAND
   if (sentence === "help") {
+    console.log("Getting all commands");
     message.channel.send({
       embeds: [
         new MessageEmbed()
