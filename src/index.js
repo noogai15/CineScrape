@@ -8,6 +8,7 @@ const client = new Client({
 });
 const cmd = "!cs";
 var schedules = [];
+var lastStatus = {};
 
 //Cheerio Scraper
 //@params: void
@@ -61,7 +62,7 @@ client.on("messageCreate", (message) => {
     console.log("Getting all movies");
     scrapeAllMovies().then((allMovies) => {
       allMovies.forEach((movie) => {
-        message.channel.send("`" + movie.title + "`");
+        message.channel.send("`" + title + "`");
       });
     });
   }
@@ -88,20 +89,29 @@ client.on("messageCreate", (message) => {
 
   scrapeAllMovies().then((allMovies) => {
     allMovies.forEach((movie) => {
-      if (sentence.toUpperCase().includes(movie.title.toUpperCase())) {
-        console.log(`Found movie: ${movie.title}`);
+      const title = movie.title;
+
+      if (sentence.toUpperCase().includes(title.toUpperCase())) {
+        console.log(`Found movie: ${title}`);
         const embed = new MessageEmbed()
-          .setTitle(movie.title)
+          .setTitle(title)
           .setDescription(movie.releaseDate);
 
-        if (movie.available) {
+        if (movie.available && lastStatus[title] === false) {
+          lastStatus[title] = movie.available;
           embed.addField("Tickets Status: ", "`AVAILABLE`", true);
+          message.reply({ embeds: [embed] });
+        } else if (movie.available) {
+          lastStatus[title] = movie.available;
+          embed.addField("Tickets Status: ", "`AVAILABLE`", true);
+          message.channel.send({ embeds: [embed] });
         } else {
+          lastStatus[title] = movie.available;
           embed.addField("Tickets Status: ", "Not available...", true);
+          message.channel.send({ embeds: [embed] });
         }
+
         console.log("SENDING");
-        message.channel.send({ embeds: [embed] });
-        // clearInterval(schedule);
         schedules = [];
         var s = setInterval(() => {
           console.log("SENDING");
