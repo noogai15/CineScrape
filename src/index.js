@@ -1,7 +1,7 @@
-import * as cheerio from "cheerio";
-import { Client, Intents, MessageEmbed } from "discord.js";
-import "dotenv/config";
-import fetch from "node-fetch";
+const cheerio = require("cheerio");
+const { Client, Intents, MessageEmbed } = require("discord.js");
+require("dotenv").config();
+const fetch = require("node-fetch");
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -13,7 +13,7 @@ var lastStatus = {};
 //Cheerio Scraper
 //@params: void
 //return: JSON Object (Movies)
-export async function scrapeAllMovies() {
+async function scrapeAllMovies() {
   const res = await fetch(
     "https://www.uci-kinowelt.de/coming-soon#!#scroll-to-the-program-please"
   );
@@ -62,7 +62,7 @@ client.on("messageCreate", (message) => {
     console.log("Getting all movies");
     scrapeAllMovies().then((allMovies) => {
       allMovies.forEach((movie) => {
-        message.channel.send("`" + title + "`");
+        message.channel.send("`" + movie.title + "`");
       });
     });
   }
@@ -131,7 +131,7 @@ process.on("uncaughtException", (err) => {
   }
   client.users.cache
     .get(process.env.BOT_OWNER_ID)
-    ?.send("I fucking died.\nError: " + err)
+    .send("I fucking died.\nError: " + err)
     .then(() => process.exit(1))
     .catch(() => console.log("Message failed to send to Bot owner"));
 });
