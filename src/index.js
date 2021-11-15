@@ -52,7 +52,11 @@ client.on("messageCreate", (message) => {
     console.log("Clearing all schedules");
     schedules.forEach((s) => {
       clearInterval(s);
+      if (!s._destroyed) console.log("A schedule was not destroyed");
     });
+
+    console.log("Stopped " + schedules.length + " schedules");
+    schedules = [];
     message.channel.send("Stopped");
     return;
   }
@@ -85,12 +89,36 @@ client.on("messageCreate", (message) => {
   }
 
   console.log(`Sentence is: ${sentence.toUpperCase()}`);
-  const timer = 1000 * 3600; //in ms (factor 2: 3600 for 1h)
+  const timer = 1000 * 120; //in ms (factor 2: 3600 for 1h)
 
+  if (movieValid) {
+    var s = setInterval(() => {
+      makeEmbed(sentence, message);
+    }, timer);
+  }
+
+  // Initial send
+  makeEmbed(sentence, message);
+  schedules.push(s);
+});
+
+const movieValid = (sentence) => {
   scrapeAllMovies().then((allMovies) => {
     allMovies.forEach((movie) => {
       const title = movie.title;
+      if (sentence.toUpperCase().includes(title.toUpperCase())) {
+        return true;
+      }
+      return false;
+    });
+  });
+};
 
+//ON UNCAUGHT ERROR
+const makeEmbed = (sentence, message) => {
+  scrapeAllMovies().then((allMovies) => {
+    allMovies.forEach((movie) => {
+      const title = movie.title;
       if (sentence.toUpperCase().includes(title.toUpperCase())) {
         console.log(`Found movie: ${title}`);
         const embed = new MessageEmbed()
@@ -110,20 +138,11 @@ client.on("messageCreate", (message) => {
           embed.addField("Tickets Status: ", "Not available...", true);
           message.channel.send({ embeds: [embed] });
         }
-
         console.log("SENDING");
-        schedules = [];
-        var s = setInterval(() => {
-          console.log("SENDING");
-          message.channel.send({ embeds: [embed] });
-        }, timer);
-        schedules.push(s);
       }
     });
   });
-});
-
-//ON UNCAUGHT ERROR
+};
 process.on("uncaughtException", (err) => {
   console.error(err);
   if (!process.env.BOT_OWNER_ID) {
